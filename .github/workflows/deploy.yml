@@ -43,9 +43,9 @@ jobs:
           USERNAME: ${{ secrets.VPS_USERNAME }}
           SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
         run: |
-          echo "${SSH_KEY}" > key.pem
+          echo "${secrets.VPS_SSH_KEY}" > key.pem
           chmod 600 key.pem
-          rsync -avz -e "ssh -i key.pem" --delete ./build/ ${USERNAME}@${HOST}:/path/to/deployment/directory
+          rsync -avz -e "ssh -i key.pem" --delete ./build/ ${secrets.VPS_USERNAME}@${secrets.VPS_HOST}:/path/to/deployment/directory
           rm key.pem
 
       # Clean up secret key
