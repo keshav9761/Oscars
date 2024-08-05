@@ -1,4 +1,4 @@
-name: Node.js CI/CD
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,28 +6,54 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Specify the Node.js version
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
+      - name: Build application
+        run: npm run build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          host: ${{ secrets.VPS_IP }}
-          username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            cd /path/to/your/nodejs/app
-            git pull origin master
-            npm install --production
-            pm2 restart all # or any other process manager you use
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build
+
+      # Example step for deploying using SSH
+      - name: Deploy to Hoistenger
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USERNAME: ${{ secrets.VPS_USERNAME }}
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          echo "${SSH_KEY}" > key.pem
+          chmod 600 key.pem
+          rsync -avz -e "ssh -i key.pem" --delete ./build/ ${USERNAME}@${HOST}:/path/to/deployment/directory
+          rm key.pem
+
+      # Clean up secret key
+      - name: Clean up secret key
+        run: rm -f key.pem
