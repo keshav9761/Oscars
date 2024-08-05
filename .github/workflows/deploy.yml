@@ -36,18 +36,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Example step for deploying using SSH
-      - name: Deploy to Hoistenger
-        env:
-          HOST: ${{ secrets.VPS_HOST }}
-          USERNAME: ${{ secrets.VPS_USERNAME }}
-          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-        run: |
-          echo "${secrets.VPS_SSH_KEY}" > key.pem
-          chmod 600 key.pem
-          rsync -avz -e "ssh -i key.pem" --delete ./build/ ${secrets.VPS_USERNAME}@${secrets.VPS_HOST}:/path/to/deployment/directory
-          rm key.pem
+      - name: Build application
+        run: npm run build
 
-      # Clean up secret key
-      - name: Clean up secret key
-        run: rm -f key.pem
+      - name: Deploy to Hostinger
+        env:
+          HOSTINGER_HOST: ${{ secrets.VPS_HOST }}
+          HOSTINGER_USERNAME: ${{ secrets.VPS_USERNAME }}
+          HOSTINGER_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+          rsync -avz -e "ssh -i key.pem" --delete ./build/ ${{ secrets.VPS_USERNAME }}@${{ secrets.HOSTINGER_HOST }}:/path/to/deployment/directory
+          rm key.pem
