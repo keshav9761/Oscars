@@ -6,7 +6,7 @@ app.use(cors());
 
 
 app.get("/", (req, res) => {
-    res.send({ msg: "Hello, World!" });
+    res.statusCode(200).json({ msg: "Hello, World!"});
 })
 
 app.listen(PORT, () => {
