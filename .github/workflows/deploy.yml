@@ -44,5 +44,5 @@ jobs:
         run: |
           echo "${{ secrets.VPS_SSH_KEY }}" > key.pem
           chmod 600 key.pem
-          rsync -avz -e "ssh -i key.pem" --delete ./home ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt
+          rsync -avz -e "ssh -i key.pem" --delete ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt
           rm key.pem
