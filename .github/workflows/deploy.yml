@@ -1,21 +1,61 @@
-name: Deploy to Hostinger Using GitHub Actions
+name: Auto Deploy in VPS after Push in Production
+
 
 on:
   push:
     branches:
-      - master # The branch name your are commit the new changes
+      - master
 jobs:
-  build_deploy:
-    name: Build and Deploy
+  deploy:
+    name: Deploy project with Nginx
+    permissions:
+      deployments: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
-
-      - name: Install sshpass
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
-
-      - run: |
-          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'cd domains && ls -l && chmod 777 http://89.116.33.204 && ls -l && cd http://89.116.33.204 && ls -l && rm -rf * && rm -rf .git && rm -rf .github && git clone https://github.com/keshav9761/Oscars.git .'
+      - name: Checkout Repository
+        uses: 'actions/checkout@v2'
+        with:
+          ref: main
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+      - name: Create GitHub deployment
+        uses: chrnorm/deployment-action@v2
+        id: deployment
+        with:
+          token: '${{ github.token }}'
+          environment-url: ${{ vars.MY_APP }}
+          environment: production
+      - name: Set up SSH Key and Deploy my App on Server
+        # run: |
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: 22
+          script: |
+            git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
+            cd chatg/
+            git pull origin dev-branch
+            npm ci
+            npm run frontend
+            pm2 restart chatg --update-env
+      - name: Update deployment Status (success)
+        if: success()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ github.token }}'
+          environment-url: ${{ vars.MY_APP }}
+          state: 'success'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+      
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ github.token }}'
+          environment-url: ${{ vars.MY_APP }}
+          state: 'failure'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
