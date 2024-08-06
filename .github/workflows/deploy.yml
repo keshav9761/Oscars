@@ -45,7 +45,14 @@ jobs:
           port: 22
           script: |
             mkdir -p ~/work/Oscars
-            cd ~/work/Oscars
+            echo "Deploying to VPS"
+            # Navigate to the correct directory
+            cd ~/work/Oscars || { echo "Directory not found"; exit 1; }
+            # Verify that we're in a Git repository
+            if [ ! -d ".git" ]; then
+              echo "Not a git repository"; exit 1;
+            fi
+            # Pull latest changes
             git pull origin master
             git status
             npm install --only=prod
