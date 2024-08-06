@@ -11,6 +11,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/one", (req, res) => {
+    
     res.statusCode(200).json({ msg: "Hi"});
 })
 
