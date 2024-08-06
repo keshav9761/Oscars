@@ -7,12 +7,12 @@ app.use(cors());
 
 
 app.get("/", (req, res) => {
-    res.statusCode(200).json({ msg: "Hello, World!"});
+    res.status(200).json({ msg: "Hello, World!"});
 })
 
 app.get("/7", (req, res) => {
     
-    res.statusCode(200).json({ msg: "Hi"});
+    res.status(200).json({ msg: "Hi"});
 })
 
 app.listen(PORT, () => {
