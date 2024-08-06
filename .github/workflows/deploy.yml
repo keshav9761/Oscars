@@ -41,7 +41,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
           run: |
-            ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+            ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@foxboro << 'EOF'
             echo "Deploying to VPS"
             mkdir -p ~/work/Oscars && cd ~/work/Oscars
             git pull origin master
