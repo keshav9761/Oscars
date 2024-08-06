@@ -42,7 +42,16 @@ jobs:
           HOSTINGER_USERNAME: ${{ secrets.VPS_USERNAME }}
           HOSTINGER_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
         run: |
-          echo "${{ secrets.VPS_SSH_KEY }}" > key.pem
-          chmod 600 key.pem
-          rsync -avz -e "ssh -i key.pem" --delete  ~/work/Oscars ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/opt
-          rm key.pem
+          - name: Deploy using ssh
+            uses: appleboy/ssh-action@master
+            with:
+              host: ${{ secrets.VPS_HOST }}
+              username: ${{ secrets.VPS_USERNAME }}
+              key: ${{ secrets.VPS_SSH_KEY }}
+              port: 22
+              script: |
+                cd ~/work/Oscars
+                git pull origin master
+                git status
+                npm install --only=prod
+                # pm2 restart YoutubeApp
