@@ -43,7 +43,7 @@ jobs:
           run: |
             ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
             echo "Deploying to VPS"
-            mkdir -p ~/actions-runner/_work && cd ~/actions-runner/_work
+            mkdir -p ~/actions-runner/work && cd ~/actions-runner/work
             if [ ! -d ".git" ]; then
               echo "Not a git repository"; exit 1;
             fi
