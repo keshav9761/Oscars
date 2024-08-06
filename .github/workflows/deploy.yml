@@ -45,7 +45,7 @@ jobs:
           echo "Deploying to VPS"
           mkdir -p ~/work/Oscars && cd ~/work/Oscars
           if [ ! -d ".git" ]; then
-            echo "Not a git repository"; exit 1;
+            git clone https://github.com/keshav9761/Oscars.git
           fi
           git pull origin master
           git status
