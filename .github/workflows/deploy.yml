@@ -45,7 +45,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
           echo "Deploying to VPS"
-          mkdir -p ~/work/Oscars
           cd ~/work/Oscars
           
           # Check if repository exists
@@ -54,7 +53,7 @@ jobs:
             git pull origin master
           else
             echo "Cloning repository"
-            git clone https://github.com/your_username/your_repository.git .
+            git clone https://github.com/keshav9761/Oscars.git .
           fi
 
           git status
