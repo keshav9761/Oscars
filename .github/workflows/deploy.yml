@@ -37,24 +37,20 @@ jobs:
         run: npm install
 
       - name: Deploy to Hostinger
-        uses: 'https://github.com/keshav9761/Oscars.git'
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
-          script: |
-            mkdir -p ~/work/Oscars
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+          run: |
+            ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
             echo "Deploying to VPS"
-            # Navigate to the correct directory
             cd ~/work/Oscars || { echo "Directory not found"; exit 1; }
-            # Verify that we're in a Git repository
             if [ ! -d ".git" ]; then
               echo "Not a git repository"; exit 1;
             fi
-            # Pull latest changes
             git pull origin master
             git status
             npm install --only=prod
             # Uncomment the following line if you use pm2 to manage processes
             # pm2 restart YoutubeApp
+            EOF
+
