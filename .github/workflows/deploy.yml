@@ -1,19 +1,32 @@
-name: Deploy Frontend
+name: Deploy Backend
 
 on:
   push:
     branches:
-      - staging
-      - specific_branch
       - master
 
 jobs:
-  deploy_qa:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+        
+  deploy:
     if: github.ref == 'refs/heads/specific_branch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Connect with VPS
         uses: appleboy/ssh-action@master
