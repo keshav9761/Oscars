@@ -10,8 +10,7 @@ app.get("/", (req, res) => {
     res.status(200).json({ msg: "Hello, World!"});
 })
 
-app.get("/7", (req, res) => {
-    
+app.get("/5", (req, res) => {
     res.status(200).json({ msg: "Hi"});
 })
 
