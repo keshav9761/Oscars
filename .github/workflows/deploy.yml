@@ -43,13 +43,11 @@ jobs:
       - run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
           echo "Deploying to VPS"
-          mkdir -p ~/work/Oscars && cd ~/work/Oscars
-          if [ ! -d ".git" ]; then
-            git clone https://github.com/keshav9761/Oscars.git
-          fi
-          git pull origin master
-          git status
+          mkdir -p ~/work
+          git clone https://github.com/keshav9761/Oscars.git
+          cd ~/work/Oscars
           npm install --only=prod
+          git status
           # Uncomment the following line if you use pm2 to manage processes
           # pm2 restart YoutubeApp
           EOF
