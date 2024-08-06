@@ -48,18 +48,15 @@ jobs:
           mkdir -p ~/work/Oscars
           cd ~/work/Oscars
           
-          # Clone the repository if it doesn't exist
-          if [ ! -d ".git" ]; then
+          # Check if repository exists
+          if [ -d ".git" ]; then
+            echo "Repository exists. Pulling latest changes."
+            git pull origin master
+          else
             echo "Cloning repository"
             git clone https://github.com/your_username/your_repository.git .
           fi
 
-          # Ensure the repository is properly cloned
-          if [ ! -d ".git" ]; then
-            echo "Failed to clone repository"; exit 1;
-          fi
-
-          git pull origin master
           git status
 
           # Check if package.json exists before running npm install
