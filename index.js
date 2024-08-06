@@ -10,7 +10,7 @@ app.get("/", (req, res) => {
     res.statusCode(200).json({ msg: "Hello, World!"});
 })
 
-app.get("/6", (req, res) => {
+app.get("/7", (req, res) => {
     
     res.statusCode(200).json({ msg: "Hi"});
 })
