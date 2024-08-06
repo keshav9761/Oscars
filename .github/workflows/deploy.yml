@@ -42,7 +42,4 @@ jobs:
           HOSTINGER_USERNAME: ${{ secrets.VPS_USERNAME }}
           HOSTINGER_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
         run: |
-          echo "${{ secrets.VPS_SSH_KEY }}" > key.pem
-          chmod 600 key.pem
-          rsync -avz -e "ssh -i key.pem" --delete ./build ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:./opt
-          rm key.pem
+          ssh root@89.116.33.204 "bash -s" < deploy.sh
