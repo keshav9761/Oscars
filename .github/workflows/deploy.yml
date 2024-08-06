@@ -71,7 +71,7 @@ jobs:
           fi
 
           # Start the application using PM2
-          pm2 start index.js --name "Oscars"
+          pm2 restart Oscars || pm2 start index.js --name "Oscars"
 
           # Optional: Save the PM2 process list and resurrect on reboot
           pm2 save
