@@ -36,18 +36,38 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Deploy to Hostinger
+      - name: Start SSH agent
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
-      - run: |
+
+      - name: Deploy to Hostinger
+        run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
           echo "Deploying to VPS"
-          mkdir -p ~/work/Oscars && cd ~/work/Oscars
+          mkdir -p ~/work/Oscars
+          cd ~/work/Oscars
+          
+          # Clone the repository if it doesn't exist
+          if [ ! -d ".git" ]; then
+            echo "Cloning repository"
+            git clone https://github.com/your_username/your_repository.git .
+          fi
+
+          # Ensure the repository is properly cloned
+          if [ ! -d ".git" ]; then
+            echo "Failed to clone repository"; exit 1;
+          fi
+
           git pull origin master
           git status
+
+          # Check if package.json exists before running npm install
+          if [ ! -f "package.json" ]; then
+            echo "package.json not found"; exit 1;
+          fi
+
           npm install --omit=dev
           # Uncomment the following line if you use pm2 to manage processes
           # pm2 restart YoutubeApp
           EOF
-
