@@ -1,57 +1,29 @@
-name: CI/CD Pipeline
+name: Generate a build and push to another branch
 
 on:
   push:
     branches:
-      - master
+      - master # The branch name your are commit the new changes
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    name: Build and Push
     steps:
-      - name: Checkout repository
+      - name: git-checkout
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
+      - name: Install all dependencies
         run: npm install
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Build
+        run: npm run build # The build command of your project
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Deploy to Hostinger
+      - name: Push
+        uses: s0/git-publish-subdir-action@develop
         env:
-          HOSTINGER_HOST: ${{ secrets.VPS_HOST }}
-          HOSTINGER_USERNAME: ${{ secrets.VPS_USERNAME }}
-          HOSTINGER_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-        run: |
-          - name: Deploy using ssh
-            uses: appleboy/ssh-action@master
-            with:
-              host: ${{ secrets.VPS_HOST }}
-              username: ${{ secrets.VPS_USERNAME }}
-              key: ${{ secrets.VPS_SSH_KEY }}
-              port: 22
-              script: |
-                cd ~/work/Oscars
-                git pull origin master
-                git status
-                npm install --only=prod
-                # pm2 restart YoutubeApp
+          REPO: self
+          BRANCH: master # The branch name where you want to push the assets
+          # FOLDER: master # The directory where your assets are generated
+          GITHUB_TOKEN: ${{ secrets.VPS_SSH_KEY }} # GitHub will automatically add this - you don't need to bother getting a token
+          MESSAGE: "Build: ({sha}) {msg}" # The commit message
