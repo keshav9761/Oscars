@@ -7,7 +7,7 @@ app.use(cors());
 
 
 app.get("/", (req, res) => {
-    res.status(200).json({ msg: "Hello, World!"});
+    res.status(200).json({ msg: "Hello, World!", hi: "I am working"});
 })
 
 app.get("/5", (req, res) => {
