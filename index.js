@@ -1,17 +1,14 @@
 const Express = require("express");
 const cors = require("cors");
+const path = require('path');
 const app = Express();
-const PORT = 8080;
+const PORT = 80;
 
 app.use(cors());
-
+app.use(Express.static(path.join(__dirname, 'frontend')))
 
 app.get("/", (req, res) => {
-    res.status(200).json({ msg: "Hello, World", hi: "I am working"});
-})
-
-app.get("/5", (req, res) => {
-    res.status(200).json({ msg: "Hi"});
+    res.send('index.html')
 })
 
 app.listen(PORT, () => {
