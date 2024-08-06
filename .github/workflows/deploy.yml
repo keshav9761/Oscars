@@ -63,7 +63,7 @@ jobs:
             echo "package.json not found"; exit 1;
           fi
 
-          npm install --omit=prod
+          npm install --only=prod
           # Uncomment the following line if you use pm2 to manage processes
           # pm2 restart YoutubeApp
           EOF
