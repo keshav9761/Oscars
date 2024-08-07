@@ -11,6 +11,10 @@ app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 })
 
+app.get("/api", (req, res) => {
+    res.send({a: 1, b: 2});
+})
+
 app.listen(PORT, () => {
     console.log("Server Started On Post", PORT)
 })
