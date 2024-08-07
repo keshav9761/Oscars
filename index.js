@@ -11,6 +11,7 @@ app.get("/api", (req, res) => {
     res.send({a: 2, b: 'Ramu', c: 6});
 })
 
+
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 })
